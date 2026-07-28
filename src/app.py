@@ -63,7 +63,7 @@ def run_react_agent(user_query: str, provider):
         
         if step == 1:
             print("🧠 Thought: Câu hỏi này yêu cầu tìm phòng trọ ở Thủ Đức với giá dưới 3 triệu/tháng. Tôi sẽ dùng công cụ search_properties.")
-            print('🛠️ Action: search_properties\nAction Input: {"location": "Thủ Đức", "max_price": 3000000, "property_type": "nhà trọ"}')
+            print('🛠️ Action: search_properties({"location": "Thủ Đức", "max_price": 3000000, "property_type": "nhà trọ"})')
             
             # Thực thi tool
             obs = search_properties(location="Thủ Đức", max_price=3000000, property_type="nhà trọ")
