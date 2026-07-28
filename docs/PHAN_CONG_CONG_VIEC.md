@@ -11,8 +11,8 @@
 | **Role 1: Product Architect**           | `config/test_cases.json` | Định hướng bài toán & soạn bộ câu test case                                                       | `2A202601660-Lê Huy Hoàng` |
 | **Role 2: Tool Engineer**               | `src/tools.py`           | Định nghĩa các công cụ (Tools) cho Agent                                                             | `2A202602033-Phan Văn Phương` |
 | **Role 3: Prompt Engineer**             | `src/prompts.py`         | Viết ReAct System Prompt & phanh Guardrails                                                               | `2A202601594-Nguyễn Trí Trung` |
-| **Role 4: Core DAeveloper / Integrator** | `src/app.py`             | **Đầu mối kéo code/file của nhóm (`git pull`), Vibe Code lắp ráp thành App hoàn chỉnh** | `________________` |
-| **Role 5: Observability**               | `docs/trace_eval.md`     | Lập bảng Scoring Matrix & Soi nhật ký Trace Log                                                        | `________________` |
+| **Role 4: Core DAeveloper / Integrator** | `src/app.py`             | **Đầu mối kéo code/file của nhóm (`git pull`), Vibe Code lắp ráp thành App hoàn chỉnh** | `Cả nhóm` |
+| **Role 5: Observability**               | `docs/trace_eval.md`     | Lập bảng Scoring Matrix & Soi nhật ký Trace Log                                                        | `Cả nhóm` |
 
 *Note: Nếu nhóm 6 người, Role 5 tách thành 5A (Trace Analyst) và 5B (Flowchart Architect).*
 
