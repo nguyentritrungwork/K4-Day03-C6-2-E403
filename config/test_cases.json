@@ -14,8 +14,8 @@
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần 1 Tool)",
-    "question": "Tìm giúp tôi phòng trọ ở quận Bình Thạnh, giá dưới 3 triệu/tháng.",
-    "expected_behavior": "Agent gọi tool search_listings(location='Bình Thạnh', max_price=3000000) rồi tổng hợp danh sách phòng phù hợp."
+    "question": "Tìm giúp tôi phòng trọ ở quận Thủ Duc, giá dưới 3 triệu/tháng.",
+    "expected_behavior": "Agent gọi tool search_listings(location='Thủ Đức', max_price=3000000) rồi tổng hợp danh sách phòng phù hợp."
   },
   {
     "id": 4,

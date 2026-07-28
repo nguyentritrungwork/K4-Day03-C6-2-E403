@@ -19,7 +19,7 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import AVAILABLE_TOOLS, search_properties
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
@@ -62,16 +62,16 @@ def run_react_agent(user_query: str, provider):
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
         
         if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
+            print("🧠 Thought: Câu hỏi này yêu cầu tìm phòng trọ ở Thủ Đức với giá dưới 3 triệu/tháng. Tôi sẽ dùng công cụ search_properties.")
+            print('🛠️ Action: search_properties\nAction Input: {"location": "Thủ Đức", "max_price": 3000000, "property_type": "nhà trọ"}')
             
             # Thực thi tool
-            obs = get_weather("Hà Nội")
+            obs = search_properties(location="Thủ Đức", max_price=3000000, property_type="nhà trọ")
             print(f"👁️ Observation: {obs}")
             
         elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+            print("🧠 Thought: Tôi đã có kết quả tìm kiếm phòng trọ ở Thủ Đức phù hợp tiêu chí. Bây giờ tôi sẽ trả lời người dùng.")
+            print("🏁 Final Answer: Chào bạn, hiện tại ở Thủ Đức đang có phòng trọ NT02 (25m², có gác lửng) với giá 2,500,000 VNĐ/tháng rất phù hợp với yêu cầu dưới 3 triệu của bạn. Bạn có muốn xem thêm chi tiết hoặc đặt lịch đi xem phòng này không?")
             break
             
     if step >= MAX_ITERATIONS:
