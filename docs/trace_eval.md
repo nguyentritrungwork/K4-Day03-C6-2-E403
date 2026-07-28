@@ -14,41 +14,16 @@
 
 ## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
 
-**Câu hỏi**: *"Tìm giúp tôi phòng trọ ở quận Thủ Duc, giá dưới 3 triệu/tháng."*
+**Câu hỏi**: *" Kiểm tra xem phòng trọ mã P102 còn trống lịch xem vào 9h sáng mai không, nếu còn thì đặt lịch giúp tôi luôn."*
 
 ### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Chào bạn! Mình rất vui được hỗ trợ bạn tìm phòng trọ ở khu vực Thủ Đức (nay là thành phố Thủ Đức) với mức giá dưới 3 triệu/tháng.
+* **Phản hồi**: *"Rất tiếc, tôi là chatbot tư vấn thông thường và không có quyền truy cập vào hệ thống quản lý phòng trọ thực tế để kiểm tra lịch trống hay đặt lịch. Bạn vui lòng liên hệ trực tiếp với chủ phòng trọ hoặc bộ phận quản lý để được hỗ trợ kiểm tra và đặt lịch cho phòng P102 vào 9h sáng mai nhé. Nếu cần thông tin khác, tôi sẵn sàng giúp đỡ!"*
 
-Tuy nhiên, mình là trợ lý AI không có khả năng truy cập dữ liệu thời gian thực từ các trang cho thuê nhà trọ hay tin đăng mới nhất. Thông tin về phòng trọ thường thay đổi liên tục, nên mình sẽ không thể đưa ra danh sách cụ thể và chính xác được.
-
-**Nhưng mình có thể gợi ý cho bạn một số cách tìm kiếm hiệu quả:**
-
-1. **Các trang web/ứng dụng phổ biến:**
-   - Phongtro.com, Nhatot.com, ChoTot.vn, Homedy.com
-   - Facebook Marketplace hoặc các group chuyên cho thuê phòng trọ tại Thủ Đức (ví dụ: "Phòng trọ Thủ Đức - Giá rẻ", "Hội sinh viên Thủ Đức")
-   - Zalo OA của các khu nhà trọ, hoặc các hội nhóm trên Zalo
-
-2. **Một số lưu ý khi tìm:**
-   - Giá dưới 3 triệu/tháng ở Thủ Đức thường là phòng trọ nhỏ (khoảng 15-20m²), có thể ở các khu vực xa trung tâm như: phường Linh Trung, Linh Xuân, Tam Bình, Tam Phú, hoặc gần các trường đại học (ĐH Quốc gia, ĐH Sư phạm Kỹ thuật…).
-   - Nên xem phòng trực tiếp, kiểm tra kỹ hợp đồng, điện nước, an ninh và các chi phí phát sinh (phí dịch vụ, gửi xe…).
-   - Cảnh giác với các tin đăng ảo, giá rẻ bất thường hoặc yêu cầu chuyển tiền cọc trước khi xem phòng.
-
-3. **Nếu bạn cần thêm lời khuyên về cách tìm hoặc các tiêu chí chọn phòng (gần chợ, gần trường, an toàn…), mình sẵn lòng tư vấn thêm.**
-
-Hy vọng bạn sớm tìm được phòng ưng ý! Nếu cần mình giúp gì thêm, đừng ngần ngại hỏi nhé 😊
-"*
-* **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
 
 ### 🧠 ReAct Agent:
-* **Thought 1**:  Câu hỏi này yêu cầu tìm phòng trọ ở Thủ Đức với giá dưới 3 triệu/tháng. Tôi sẽ dùng công cụ search_properties.
-* **Action 1**: `search_properties`
-* **Observation 1**: ` Kết quả tìm kiếm nhà trọ/căn hộ tại 'Thủ Đức':
-1. CH01 - Chung cư mini 45m² - Quận 1 - 5,000,000 VNĐ/tháng (2PN)
-2. NT02 - Nhà trọ 25m² - Thủ Đức - 2,500,000 VNĐ/tháng (1PN)
-3. CH03 - Căn hộ studio 35m² - Quận 3 - 4,000,000 VNĐ/tháng
-4. NT04 - Phòng trọ 20m² - Cầu Giấy - 2,000,000 VNĐ/tháng
-5. CH05 - Căn hộ 70m² - Quận 7 - 8,000,000 VNĐ/tháng (2PN)
-(Dữ liệu mẫu — vui lòng lọc thêm nếu cần)`
-* **Thought 2**:Tôi đã có kết quả tìm kiếm phòng trọ ở Thủ Đức phù hợp tiêu chí. Bây giờ tôi sẽ trả lời người dùng.
-* **Final Answer**: Chào bạn, hiện tại ở Thủ Đức đang có phòng trọ NT02 (25m², có gác lửng) với giá 2,500,000 VNĐ/tháng rất phù hợp với yêu cầu dưới 3 triệu của bạn. Bạn có muốn xem thêm chi tiết hoặc đặt lịch đi xem phòng này không?
+* **Thought 1**:  Tôi sẽ lấy thông tin phòng P102 trước để xác nhận mã phòng và các chi tiết cần thiết.
+* **Action 1**: `get_property_details({"property_id": "P102"})`
+* **Observation 1**: `LỖI: Không tìm thấy bất động sản với mã 'P102'.`
+* **Thought 2**:Mã phòng "P102" không tồn tại trong hệ thống. Tôi cần thông báo cho người dùng và hỏi lại thông tin.
+* **Final Answer**: Xin lỗi, mã phòng "P102" không tồn tại trong hệ thống của tôi. Bạn có thể vui lòng kiểm tra lại mã phòng hoặc cung cấp thêm thông tin về vị trí/khu vực để tôi có thể hỗ trợ tìm phòng phù hợp?
 * **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.

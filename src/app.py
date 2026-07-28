@@ -19,7 +19,7 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, search_properties
+from tools import AVAILABLE_TOOLS, search_properties, check_viewing_availability, book_viewing
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
@@ -55,24 +55,55 @@ def run_react_agent(user_query: str, provider):
     Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
+    
+    prompt_history = f"Câu hỏi của người dùng: {user_query}\n"
     step = 0
     
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
         
-        if step == 1:
-            print("🧠 Thought: Câu hỏi này yêu cầu tìm phòng trọ ở Thủ Đức với giá dưới 3 triệu/tháng. Tôi sẽ dùng công cụ search_properties.")
-            print('🛠️ Action: search_properties({"location": "Thủ Đức", "max_price": 3000000, "property_type": "nhà trọ"})')
-            
-            # Thực thi tool
-            obs = search_properties(location="Thủ Đức", max_price=3000000, property_type="nhà trọ")
-            print(f"👁️ Observation: {obs}")
-            
-        elif step == 2:
-            print("🧠 Thought: Tôi đã có kết quả tìm kiếm phòng trọ ở Thủ Đức phù hợp tiêu chí. Bây giờ tôi sẽ trả lời người dùng.")
-            print("🏁 Final Answer: Chào bạn, hiện tại ở Thủ Đức đang có phòng trọ NT02 (25m², có gác lửng) với giá 2,500,000 VNĐ/tháng rất phù hợp với yêu cầu dưới 3 triệu của bạn. Bạn có muốn xem thêm chi tiết hoặc đặt lịch đi xem phòng này không?")
+        # 1. Gọi LLM sinh Thought và Action (hoặc Final Answer)
+        llm_response = provider.generate(prompt=prompt_history, system_prompt=REACT_SYSTEM_PROMPT)
+        print(f"{llm_response}")
+        
+        prompt_history += f"{llm_response}\n"
+        
+        # 2. Nếu có Final Answer thì dừng
+        if "Final Answer:" in llm_response:
+            print("🏁 Đã tìm thấy câu trả lời cuối cùng, kết thúc vòng lặp.")
             break
+            
+        # 3. Parse và thực thi Tool nếu có Action
+        if "Action:" in llm_response:
+            try:
+                # Tìm dòng bắt đầu bằng Action:
+                action_line = [line for line in llm_response.split('\n') if line.strip().startswith("Action:")]
+                if action_line:
+                    action_str = action_line[-1].replace("Action:", "").strip()
+                    # Ví dụ: search_properties({"location": "Thủ Đức"})
+                    
+                    tool_name = action_str.split('(')[0]
+                    args_str = action_str[len(tool_name)+1 : -1].strip()
+                    
+                    if tool_name in AVAILABLE_TOOLS:
+                        args = json.loads(args_str) if args_str else {}
+                        print(f"🛠️ Đang chạy Tool: {tool_name}...")
+                        obs = AVAILABLE_TOOLS[tool_name](**args)
+                    else:
+                        obs = f"Lỗi: Không tìm thấy công cụ '{tool_name}'."
+                        
+                    print(f"👁️ Observation:\n{obs}")
+                    prompt_history += f"Observation: {obs}\n"
+                else:
+                    prompt_history += "Observation: Lỗi parse Action.\n"
+                    
+            except Exception as e:
+                error_msg = f"Lỗi khi thực thi công cụ hoặc parse JSON: {str(e)}"
+                print(f"⚠️ {error_msg}")
+                prompt_history += f"Observation: {error_msg}\n"
+        else:
+            prompt_history += "Observation: Bạn phải trả về 'Action:' hoặc 'Final Answer:'.\n"
             
     if step >= MAX_ITERATIONS:
         print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
@@ -91,8 +122,8 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-    # Chạy thử câu test số 3
-    sample_query = tests[2]["question"]
+    # Chạy thử câu test số 5 (Multi-step kiểm tra logic)
+    sample_query = tests[6]["question"]
     
     print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
     run_baseline_chatbot(sample_query, provider)
